@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#063b6f">
+  <title>Perícia Contábil | Professor Moreira</title>
+  <style>
+    :root{--azul:#063b6f;--azul2:#0b5b9a;--ouro:#e6b84b;--branco:#fff}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:linear-gradient(135deg,#032b52,#0b69ad);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+    body{min-height:100svh;color:var(--branco);display:flex;justify-content:center}
+    .app{width:100%;min-height:100svh;display:flex;flex-direction:column;align-items:center;padding:10px clamp(10px,3vw,28px) 16px}
+    header{width:min(100%,760px);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 4px 10px}
+    .marca{font-size:clamp(.82rem,2.7vw,1.05rem);font-weight:800;letter-spacing:.02em}.contador{font-weight:800;color:#ffe08a;white-space:nowrap}
+    .palco{position:relative;width:min(100%,760px);flex:1;min-height:0;display:grid;place-items:center;background:#07518b;border:2px solid rgba(255,255,255,.18);border-radius:22px;box-shadow:0 18px 50px rgba(0,0,0,.32);overflow:hidden;touch-action:pan-y}
+    .palco::before,.palco::after{content:"";position:absolute;top:0;bottom:0;width:clamp(14px,4.5vw,42px);z-index:1;background:linear-gradient(90deg,#063b6f,#0870b8)}
+    .palco::before{left:0}.palco::after{right:0;transform:scaleX(-1)}
+    .slide{display:none;width:100%;height:100%;margin:0;place-items:center;padding:0 clamp(14px,4.5vw,42px);animation:entrada .22s ease-out}
+    .slide.ativa{display:grid}
+    .slide img{display:block;max-width:100%;max-height:calc(100svh - 116px);width:auto;height:auto;object-fit:contain;background:#fff;box-shadow:0 0 25px rgba(0,0,0,.2)}
+    @keyframes entrada{from{opacity:.25;transform:translateX(12px)}to{opacity:1;transform:none}}
+    .seta{position:absolute;z-index:3;top:50%;transform:translateY(-50%);width:48px;height:64px;border:0;border-radius:15px;background:rgba(2,31,60,.86);color:#fff;font-size:2rem;line-height:1;display:grid;place-items:center;cursor:pointer;box-shadow:0 5px 18px rgba(0,0,0,.3);transition:.18s}
+    .seta:hover,.seta:focus-visible{background:#d49c22;transform:translateY(-50%) scale(1.04);outline:3px solid #fff}.seta:active{scale:.94}.anterior{left:6px}.proxima{right:6px}
+    footer{width:min(100%,760px);display:flex;align-items:center;justify-content:center;gap:16px;padding-top:10px}
+    .reiniciar{border:1px solid rgba(255,255,255,.4);border-radius:999px;background:rgba(0,0,0,.2);color:#fff;font-weight:800;padding:9px 16px;cursor:pointer}.reiniciar:hover{background:#d49c22}
+    .pontos{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}.ponto{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35)}.ponto.ativo{background:#ffe08a;transform:scale(1.35)}
+    @media(max-width:520px){.app{padding:6px 6px 10px}header{padding:2px 4px 6px}.palco{border-radius:14px}.seta{width:38px;height:56px;font-size:1.65rem}.anterior{left:3px}.proxima{right:3px}.slide{padding-inline:30px}.slide img{max-height:calc(100svh - 104px)}footer{padding-top:7px;gap:10px}.reiniciar{padding:7px 12px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header><div class="marca">Curso de Contabilidade Professor Moreira</div><div class="contador" id="contador">1 / 11</div></header>
+    <section class="palco" id="palco" aria-label="Carrossel de Perícia Contábil">
+      <button class="seta anterior" id="anterior" aria-label="Imagem anterior">&#10094;</button>
+      <div id="slides"></div>
+      <button class="seta proxima" id="proxima" aria-label="Próxima imagem">&#10095;</button>
+    </section>
+    <footer><button class="reiniciar" id="reiniciar">&#8635; Reiniciar</button><div class="pontos" id="pontos" aria-hidden="true"></div></footer>
+  </main>
+  <script>
+    const total=11, slides=document.getElementById('slides'), pontos=document.getElementById('pontos'), contador=document.getElementById('contador'), palco=document.getElementById('palco');
+    let atual=0, inicioX=0;
+    for(let i=1;i<=total;i++){
+      const n=String(i).padStart(2,'0');
+      slides.insertAdjacentHTML('beforeend',`<figure class="slide${i===1?' ativa':''}"><img src="imagens/${n}.webp" alt="Perícia Contábil — imagem ${i} de ${total}" ${i===1?'fetchpriority="high"':'loading="lazy"'}></figure>`);
+      pontos.insertAdjacentHTML('beforeend',`<span class="ponto${i===1?' ativo':''}"></span>`);
+    }
+    const telas=[...document.querySelectorAll('.slide')], bolinhas=[...document.querySelectorAll('.ponto')];
+    function mostrar(indice){atual=(indice+total)%total;telas.forEach((x,i)=>x.classList.toggle('ativa',i===atual));bolinhas.forEach((x,i)=>x.classList.toggle('ativo',i===atual));contador.textContent=`${atual+1} / ${total}`;}
+    document.getElementById('anterior').onclick=()=>mostrar(atual-1);
+    document.getElementById('proxima').onclick=()=>mostrar(atual+1);
+    document.getElementById('reiniciar').onclick=()=>mostrar(0);
+    document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')mostrar(atual-1);if(e.key==='ArrowRight')mostrar(atual+1);if(e.key==='Home')mostrar(0)});
+    palco.addEventListener('touchstart',e=>inicioX=e.changedTouches[0].clientX,{passive:true});
+    palco.addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-inicioX;if(Math.abs(d)>45)mostrar(atual+(d<0?1:-1))},{passive:true});
+  </script>
+</body>
+</html>
