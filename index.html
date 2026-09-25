@@ -2,58 +2,536 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
   <meta name="theme-color" content="#063b6f">
+
   <title>Perícia Contábil | Professor Moreira</title>
+
   <style>
-    :root{--azul:#063b6f;--azul2:#0b5b9a;--ouro:#e6b84b;--branco:#fff}
-    *{box-sizing:border-box}
-    html,body{margin:0;min-height:100%;background:linear-gradient(135deg,#032b52,#0b69ad);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
-    body{min-height:100svh;color:var(--branco);display:flex;justify-content:center}
-    .app{width:100%;min-height:100svh;display:flex;flex-direction:column;align-items:center;padding:10px clamp(10px,3vw,28px) 16px}
-    header{width:min(100%,760px);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 4px 10px}
-    .marca{font-size:clamp(.82rem,2.7vw,1.05rem);font-weight:800;letter-spacing:.02em}.contador{font-weight:800;color:#ffe08a;white-space:nowrap}
-    .palco{position:relative;width:min(100%,760px);flex:1;min-height:0;display:grid;place-items:center;background:#07518b;border:2px solid rgba(255,255,255,.18);border-radius:22px;box-shadow:0 18px 50px rgba(0,0,0,.32);overflow:hidden;touch-action:pan-y}
-    .palco::before,.palco::after{content:"";position:absolute;top:0;bottom:0;width:clamp(14px,4.5vw,42px);z-index:1;background:linear-gradient(90deg,#063b6f,#0870b8)}
-    .palco::before{left:0}.palco::after{right:0;transform:scaleX(-1)}
-    .slide{display:none;width:100%;height:100%;margin:0;place-items:center;padding:0 clamp(14px,4.5vw,42px);animation:entrada .22s ease-out}
-    .slide.ativa{display:grid}
-    .slide img{display:block;max-width:100%;max-height:calc(100svh - 116px);width:auto;height:auto;object-fit:contain;background:#fff;box-shadow:0 0 25px rgba(0,0,0,.2)}
-    @keyframes entrada{from{opacity:.25;transform:translateX(12px)}to{opacity:1;transform:none}}
-    .seta{position:absolute;z-index:3;top:50%;transform:translateY(-50%);width:48px;height:64px;border:0;border-radius:15px;background:rgba(2,31,60,.86);color:#fff;font-size:2rem;line-height:1;display:grid;place-items:center;cursor:pointer;box-shadow:0 5px 18px rgba(0,0,0,.3);transition:.18s}
-    .seta:hover,.seta:focus-visible{background:#d49c22;transform:translateY(-50%) scale(1.04);outline:3px solid #fff}.seta:active{scale:.94}.anterior{left:6px}.proxima{right:6px}
-    footer{width:min(100%,760px);display:flex;align-items:center;justify-content:center;gap:16px;padding-top:10px}
-    .reiniciar{border:1px solid rgba(255,255,255,.4);border-radius:999px;background:rgba(0,0,0,.2);color:#fff;font-weight:800;padding:9px 16px;cursor:pointer}.reiniciar:hover{background:#d49c22}
-    .pontos{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}.ponto{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35)}.ponto.ativo{background:#ffe08a;transform:scale(1.35)}
-    @media(max-width:520px){.app{padding:6px 6px 10px}header{padding:2px 4px 6px}.palco{border-radius:14px}.seta{width:38px;height:56px;font-size:1.65rem}.anterior{left:3px}.proxima{right:3px}.slide{padding-inline:30px}.slide img{max-height:calc(100svh - 104px)}footer{padding-top:7px;gap:10px}.reiniciar{padding:7px 12px}}
+    :root {
+      --azul-escuro: #032b52;
+      --azul: #063b6f;
+      --azul-medio: #075b98;
+      --azul-claro: #0b75bd;
+      --ouro: #f2c14e;
+      --branco: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      background: var(--azul);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100svh;
+      color: var(--branco);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .app {
+      width: 100%;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding:
+        max(8px, env(safe-area-inset-top))
+        8px
+        max(12px, env(safe-area-inset-bottom));
+    }
+
+    .topo {
+      width: min(100%, 760px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 5px 6px 10px;
+    }
+
+    .marca {
+      font-size: clamp(0.78rem, 2.8vw, 1.05rem);
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .contador {
+      flex: 0 0 auto;
+      color: var(--ouro);
+      font-size: clamp(0.85rem, 3vw, 1.05rem);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .palco {
+      position: relative;
+      width: min(100%, 760px);
+      height: calc(100svh - 110px);
+      min-height: 480px;
+      max-height: 1100px;
+      overflow: hidden;
+      background:
+        linear-gradient(
+          90deg,
+          var(--azul-escuro) 0%,
+          var(--azul-claro) 7%,
+          var(--azul-medio) 14%,
+          var(--azul-medio) 86%,
+          var(--azul-claro) 93%,
+          var(--azul-escuro) 100%
+        );
+      border: 2px solid rgba(255, 255, 255, 0.24);
+      border-radius: 22px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+      touch-action: pan-y;
+    }
+
+    #slides {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0 42px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide.ativa {
+      display: flex;
+      animation: entrada 0.25s ease-out;
+    }
+
+    .slide img {
+      display: block;
+      width: auto;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background: transparent;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    @keyframes entrada {
+      from {
+        opacity: 0.35;
+        transform: translateX(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .seta {
+      position: absolute;
+      top: 50%;
+      z-index: 10;
+      width: 46px;
+      height: 66px;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 15px;
+      background: rgba(2, 31, 60, 0.9);
+      color: var(--branco);
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1;
+      cursor: pointer;
+      transform: translateY(-50%);
+      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.35);
+      transition:
+        background 0.18s ease,
+        transform 0.18s ease;
+    }
+
+    .seta:hover,
+    .seta:focus-visible {
+      background: #d89d20;
+      outline: 3px solid var(--branco);
+      transform: translateY(-50%) scale(1.04);
+    }
+
+    .seta:active {
+      transform: translateY(-50%) scale(0.94);
+    }
+
+    .anterior {
+      left: 6px;
+    }
+
+    .proxima {
+      right: 6px;
+    }
+
+    .rodape {
+      width: min(100%, 760px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding-top: 10px;
+    }
+
+    .reiniciar {
+      flex: 0 0 auto;
+      padding: 9px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--branco);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .reiniciar:hover,
+    .reiniciar:focus-visible {
+      background: #d89d20;
+      outline: 2px solid var(--branco);
+    }
+
+    .pontos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .ponto {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.35);
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .ponto.ativo {
+      background: var(--ouro);
+      transform: scale(1.4);
+    }
+
+    .aviso-erro {
+      display: none;
+      position: absolute;
+      inset: 20px;
+      z-index: 5;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: var(--branco);
+      font-size: 1rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (max-width: 520px) {
+      .app {
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+
+      .topo {
+        padding-bottom: 6px;
+      }
+
+      .palco {
+        height: calc(100svh - 98px);
+        min-height: 430px;
+        border-radius: 15px;
+      }
+
+      .slide {
+        padding-right: 31px;
+        padding-left: 31px;
+      }
+
+      .seta {
+        width: 38px;
+        height: 58px;
+        border-radius: 13px;
+        font-size: 1.65rem;
+      }
+
+      .anterior {
+        left: 2px;
+      }
+
+      .proxima {
+        right: 2px;
+      }
+
+      .rodape {
+        gap: 9px;
+        padding-top: 7px;
+      }
+
+      .reiniciar {
+        padding: 7px 12px;
+        font-size: 0.85rem;
+      }
+
+      .pontos {
+        gap: 5px;
+      }
+
+      .ponto {
+        width: 7px;
+        height: 7px;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 600px) {
+      .palco {
+        height: calc(100svh - 90px);
+        min-height: 300px;
+      }
+    }
   </style>
 </head>
+
 <body>
   <main class="app">
-    <header><div class="marca">Curso de Contabilidade Professor Moreira</div><div class="contador" id="contador">1 / 11</div></header>
-    <section class="palco" id="palco" aria-label="Carrossel de Perícia Contábil">
-      <button class="seta anterior" id="anterior" aria-label="Imagem anterior">&#10094;</button>
+
+    <header class="topo">
+      <div class="marca">
+        Curso de Contabilidade Professor Moreira
+      </div>
+
+      <div class="contador" id="contador">
+        1 / 11
+      </div>
+    </header>
+
+    <section
+      class="palco"
+      id="palco"
+      aria-label="Carrossel de Perícia Contábil"
+    >
+      <button
+        class="seta anterior"
+        id="anterior"
+        type="button"
+        aria-label="Voltar para a imagem anterior"
+      >
+        &#10094;
+      </button>
+
       <div id="slides"></div>
-      <button class="seta proxima" id="proxima" aria-label="Próxima imagem">&#10095;</button>
+
+      <div class="aviso-erro" id="avisoErro">
+        Não foi possível carregar a imagem.
+      </div>
+
+      <button
+        class="seta proxima"
+        id="proxima"
+        type="button"
+        aria-label="Avançar para a próxima imagem"
+      >
+        &#10095;
+      </button>
     </section>
-    <footer><button class="reiniciar" id="reiniciar">&#8635; Reiniciar</button><div class="pontos" id="pontos" aria-hidden="true"></div></footer>
+
+    <footer class="rodape">
+
+      <button
+        class="reiniciar"
+        id="reiniciar"
+        type="button"
+      >
+        &#8635; Reiniciar
+      </button>
+
+      <div
+        class="pontos"
+        id="pontos"
+        aria-hidden="true"
+      ></div>
+
+    </footer>
+
   </main>
+
   <script>
-    const total=11, slides=document.getElementById('slides'), pontos=document.getElementById('pontos'), contador=document.getElementById('contador'), palco=document.getElementById('palco');
-    let atual=0, inicioX=0;
-    for(let i=1;i<=total;i++){
-      const n=String(i).padStart(2,'0');
-      slides.insertAdjacentHTML('beforeend',`<figure class="slide${i===1?' ativa':''}"><img src="imagens/${n}.webp" alt="Perícia Contábil — imagem ${i} de ${total}" ${i===1?'fetchpriority="high"':'loading="lazy"'}></figure>`);
-      pontos.insertAdjacentHTML('beforeend',`<span class="ponto${i===1?' ativo':''}"></span>`);
+    const total = 11;
+
+    const slides = document.getElementById("slides");
+    const pontos = document.getElementById("pontos");
+    const contador = document.getElementById("contador");
+    const palco = document.getElementById("palco");
+    const avisoErro = document.getElementById("avisoErro");
+
+    let atual = 0;
+    let inicioX = 0;
+
+    /*
+      IMPORTANTE:
+      As imagens estão na mesma pasta do index.html no GitHub.
+
+      Estrutura:
+      index.html
+      01.webp
+      02.webp
+      ...
+      11.webp
+    */
+
+    for (let i = 1; i <= total; i++) {
+      const numero = String(i).padStart(2, "0");
+
+      const figura = document.createElement("figure");
+      figura.className = i === 1 ? "slide ativa" : "slide";
+
+      const imagem = document.createElement("img");
+      imagem.src = `${numero}.webp`;
+      imagem.alt = `Perícia Contábil — imagem ${i} de ${total}`;
+      imagem.draggable = false;
+
+      if (i === 1) {
+        imagem.fetchPriority = "high";
+      } else {
+        imagem.loading = "lazy";
+      }
+
+      imagem.addEventListener("error", function () {
+        avisoErro.style.display = "flex";
+        avisoErro.textContent =
+          `Não foi possível carregar a imagem ${numero}.webp. ` +
+          `Confirme se ela está na mesma pasta do index.html.`;
+      });
+
+      imagem.addEventListener("load", function () {
+        if (i === atual + 1) {
+          avisoErro.style.display = "none";
+        }
+      });
+
+      figura.appendChild(imagem);
+      slides.appendChild(figura);
+
+      const ponto = document.createElement("span");
+      ponto.className = i === 1 ? "ponto ativo" : "ponto";
+      pontos.appendChild(ponto);
     }
-    const telas=[...document.querySelectorAll('.slide')], bolinhas=[...document.querySelectorAll('.ponto')];
-    function mostrar(indice){atual=(indice+total)%total;telas.forEach((x,i)=>x.classList.toggle('ativa',i===atual));bolinhas.forEach((x,i)=>x.classList.toggle('ativo',i===atual));contador.textContent=`${atual+1} / ${total}`;}
-    document.getElementById('anterior').onclick=()=>mostrar(atual-1);
-    document.getElementById('proxima').onclick=()=>mostrar(atual+1);
-    document.getElementById('reiniciar').onclick=()=>mostrar(0);
-    document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')mostrar(atual-1);if(e.key==='ArrowRight')mostrar(atual+1);if(e.key==='Home')mostrar(0)});
-    palco.addEventListener('touchstart',e=>inicioX=e.changedTouches[0].clientX,{passive:true});
-    palco.addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-inicioX;if(Math.abs(d)>45)mostrar(atual+(d<0?1:-1))},{passive:true});
+
+    const telas = Array.from(
+      document.querySelectorAll(".slide")
+    );
+
+    const bolinhas = Array.from(
+      document.querySelectorAll(".ponto")
+    );
+
+    function mostrar(indice) {
+      atual = (indice + total) % total;
+
+      telas.forEach(function (tela, indiceTela) {
+        tela.classList.toggle(
+          "ativa",
+          indiceTela === atual
+        );
+      });
+
+      bolinhas.forEach(function (ponto, indicePonto) {
+        ponto.classList.toggle(
+          "ativo",
+          indicePonto === atual
+        );
+      });
+
+      contador.textContent = `${atual + 1} / ${total}`;
+
+      avisoErro.style.display = "none";
+    }
+
+    document
+      .getElementById("anterior")
+      .addEventListener("click", function () {
+        mostrar(atual - 1);
+      });
+
+    document
+      .getElementById("proxima")
+      .addEventListener("click", function () {
+        mostrar(atual + 1);
+      });
+
+    document
+      .getElementById("reiniciar")
+      .addEventListener("click", function () {
+        mostrar(0);
+      });
+
+    document.addEventListener("keydown", function (evento) {
+      if (evento.key === "ArrowLeft") {
+        mostrar(atual - 1);
+      }
+
+      if (evento.key === "ArrowRight") {
+        mostrar(atual + 1);
+      }
+
+      if (evento.key === "Home") {
+        mostrar(0);
+      }
+    });
+
+    palco.addEventListener(
+      "touchstart",
+      function (evento) {
+        inicioX = evento.changedTouches[0].clientX;
+      },
+      { passive: true }
+    );
+
+    palco.addEventListener(
+      "touchend",
+      function (evento) {
+        const finalX = evento.changedTouches[0].clientX;
+        const distancia = finalX - inicioX;
+
+        if (Math.abs(distancia) > 45) {
+          if (distancia < 0) {
+            mostrar(atual + 1);
+          } else {
+            mostrar(atual - 1);
+          }
+        }
+      },
+      { passive: true }
+    );
   </script>
 </body>
 </html>
